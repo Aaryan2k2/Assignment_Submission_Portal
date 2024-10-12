@@ -8,8 +8,6 @@ This project is a Django-based application for managing assignments, enabling us
 - [Technologies Used](#technologies-used)
 - [Setup](#setup)
 - [Running the Application](#running-the-application)
-- [Testing APIs in Postman](#testing-apis-in-postman)
-- [License](#license)
 
 ## Features
 
@@ -42,7 +40,7 @@ Make sure you have the following installed on your system:
 git clone https://github.com/Aaryan2k2/Assignment_Submission_Portal.git
 cd Assignment_Submission_Portal
 ```
-Running the Application
+## Running the Application
 Start the development server with the following command:
 ```bash
 python manage.py runserver
