@@ -9,11 +9,17 @@ class AssignmentSerializer(serializers.ModelSerializer):
         fields = ['task', 'file', 'admin']
 
 # Serializer for Admin model
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from .models import Admin
+
 class AdminSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)  # Get username from related User
+
     class Meta:
-        model=User
-        fields = ['id', 'username', 'password','department']
-        extra_kwargs = {'password': {'write_only': True}}
+        model = Admin
+        fields = ['id', 'username', 'department']  # Include username and department
+        read_only_fields = ['id']  # Optional: Make 'id' read-only if you don't want to modify it
 
       
 class UserSerializer(serializers.ModelSerializer):

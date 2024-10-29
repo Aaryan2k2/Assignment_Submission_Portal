@@ -52,32 +52,34 @@ def upload_assignment(request):
 # API to retrieve all Admins
 @api_view(['GET'])
 def all_admins(request):
-    admins = Admin.objects.all()
-    serializer = AdminSerializer(admins, many=True)
-    return Response(serializer.data)
+    admins = Admin.objects.all()  # Get all Admin instances
+    serializer = AdminSerializer(admins, many=True)  # Serialize the queryset
+    return Response({'admins': serializer.data}, status=status.HTTP_200_OK)
 
 # API for Admin Registration
 @api_view(['POST'])
 def admin_register(request):
+    # First, retrieve the department from request data
+    department = request.data.get('department')  # Get the department from request data
+    
+    if not department:
+        return Response({'error': 'Department is required for admin registration'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Now, we can create the user since the department is provided
     serializer = UserSerializer(data=request.data)
     
     if serializer.is_valid():
-        user = serializer.save()
+        user = serializer.save()  # Save the user instance
         
         # Create Admin Profile for this user
-        department = request.data.get('department')  # Get the department from request data
-        if department:
-           admin= Admin.objects.create(user=user, department=department)
-        else:
-            return Response({'error': 'Department is required for admin registration'}, status=status.HTTP_400_BAD_REQUEST)
-        
+        admin = Admin.objects.create(user=user, department=department)
+
         # Generate token for the user
         token, created = Token.objects.get_or_create(user=user)
         
         return Response({'message': 'Admin registered successfully!', 'admin_id': admin.id, 'token': token.key}, status=status.HTTP_201_CREATED)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 # API for Admin Login
 @api_view(['POST'])
 def admin_login(request):
@@ -112,7 +114,7 @@ def assignment_show(request):
         # Now getting assignments according to admin
         assignments = Assignment.objects.filter(admin=admin_profile)
         
-        # Create a list ot hold assignments
+        # Create a list to hold assignments
         assignments_data=[]
 
         for assignment in assignments:
